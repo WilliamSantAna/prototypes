@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENFFCONSIG - Usuários</title>
+  <style>
+    :root {
+      --senff-red: #CD191E;
+      --senff-red-hover: #A31216;
+      --senff-blue: #002855;
+      --senff-blue-dark: #001A38;
+      --senff-blue-light: #1A4480;
+      --senff-sidebar: #0F1E36;
+      --senff-sidebar-active: #1D3153;
+      --text-dark: #2D3748;
+      --text-muted: #718096;
+      --bg-body: #F4F6F9;
+      --bg-card: #FFFFFF;
+      --border-color: #E2E8F0;
+      
+      --status-success: #10B981;
+      --status-success-bg: #D1FAE5;
+      --status-warning: #F59E0B;
+      --status-warning-bg: #FEF3C7;
+      --status-danger: #EF4444;
+      --status-danger-bg: #FEE2E2;
+      --status-orange: #F97316;
+      --status-orange-bg: #FFEDD5;
+      --status-gray: #6B7280;
+      --status-gray-bg: #F3F4F6;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      background-color: var(--senff-sidebar);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.3s ease;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-logo span {
+      color: var(--senff-red);
+      margin-left: 2px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 0;
+      flex-grow: 1;
+    }
+
+    .menu-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7A8CA3;
+      padding: 16px 20px 8px 20px;
+      font-weight: 600;
+    }
+
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #B5C3D6;
+      text-decoration: none;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #FFFFFF;
+    }
+
+    .menu-item.active {
+      background-color: #2F3E5A;
+      color: #FFFFFF;
+      border-left: 4px solid var(--senff-red);
+      font-weight: 600;
+    }
+
+    .menu-item-nested {
+      padding-left: 36px;
+      font-size: 13px;
+    }
+
+    .menu-item svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* MAIN CONTENT */
+    .main-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      height: 64px;
+      background-color: #FFFFFF;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 32px;
+      gap: 24px;
+    }
+
+    .store-selector-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .store-selector-box label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .store-select {
+      padding: 7px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--senff-blue);
+      background-color: #FFFFFF;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--senff-blue);
+      cursor: pointer;
+    }
+
+    /* PAGE CONTAINER */
+    .page-container {
+      padding: 24px 32px 48px 32px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* HEADER & BREADCRUMB */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .page-title-area h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-pilot {
+      background: #E0E7FF;
+      color: #3730A3;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--senff-blue);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--senff-blue-light);
+    }
+
+    .btn-danger {
+      background-color: var(--senff-red);
+      color: #FFFFFF;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--senff-red-hover);
+    }
+
+    .btn-outline {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+    }
+
+    .btn-outline:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .action-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .action-stack .btn {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+      padding: 4px 0px;
+      gap: 4px;
+      font-size: 11px;
+      line-height: 1.8em;
+    }
+
+    .action-stack .btn svg,
+    .btn .icon-excel {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn .icon-excel {
+      width: 16px;
+      height: 16px;
+    }
+
+    .sms-note {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--senff-red);
+    }
+
+    /* KPI CARDS */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--senff-blue);
+    }
+
+    .kpi-card.success::before { background: var(--status-success); }
+    .kpi-card.warning::before { background: var(--status-warning); }
+    .kpi-card.danger::before { background: var(--senff-red); }
+
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--senff-blue);
+    }
+
+    .kpi-percent {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .kpi-percent.success { background: var(--status-success-bg); color: var(--status-success); }
+    .kpi-percent.danger { background: var(--status-danger-bg); color: var(--senff-red); }
+    .kpi-percent.warning { background: var(--status-warning-bg); color: var(--status-warning); }
+
+    .kpi-subtext {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .kpi-detail-link {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .kpi-detail-dialog {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .kpi-detail-dialog .modal-body {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-dark);
+    }
+
+    /* CHARTS SECTION */
+    .charts-container {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr 1.1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .chart-card {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .chart-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--senff-blue);
+    }
+
+    .chart-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: #F1F5F9;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 200px;
+      width: 100%;
+    }
+
+    /* FILTERS PANEL */
+    .filter-panel {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) auto;
+      gap: 14px;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .filter-control {
+      width: 100%;
+      height: 38px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-dark);
+      background-color: #FFFFFF;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-control:focus {
+      border-color: var(--senff-blue);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* TABLE SECTION */
+    .table-container {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: #FAFBFD;
+    }
+
+    .table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .table-counts {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .table-counts strong {
+      color: var(--senff-blue);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background-color: #F8FAFC;
+      color: var(--senff-blue);
+      font-weight: 700;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .data-table tbody tr {
+      min-height: 100px;
+    }
+
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-dark);
+      vertical-align: middle;
+      height: 100px;
+    }
+
+    .data-table tbody tr:hover {
+      background-color: #F9FAFC;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-concluido {
+      background-color: var(--status-success-bg);
+      color: #065F46;
+    }
+
+    .badge-expirado {
+      background-color: var(--status-danger-bg);
+      color: var(--senff-red);
+    }
+
+    .badge-andamento {
+      background-color: var(--status-warning-bg);
+      color: #92400E;
+    }
+
+    .badge-reprovado {
+      background-color: var(--status-orange-bg);
+      color: #9A3412;
+    }
+
+    .badge-legado {
+      background-color: var(--status-gray-bg);
+      color: #374151;
+    }
+
+    .badge-risco {
+      background-color: #FEE2E2;
+      color: #991B1B;
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 3px;
+    }
+
+    .badge-turno-manha {
+      background-color: #ECFDF5;
+      color: #047857;
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-success { background-color: var(--status-success); }
+    .dot-danger { background-color: var(--status-danger); }
+    .dot-warning { background-color: var(--status-warning); }
+    .dot-orange { background-color: var(--status-orange); }
+    .dot-gray { background-color: var(--status-gray); }
+
+    /* PAGINATION */
+    .table-footer {
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBFD;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .table-pager {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .table-pager .btn {
+      min-width: 34px;
+      justify-content: center;
+    }
+
+    /* MODAL ESTILO SENFFCONSIG */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 26, 56, 0.6);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 960px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBFD;
+    }
+
+    .modal-header h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal-btn {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    /* TABS */
+    .modal-tabs {
+      display: flex;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border-color);
+      background: #FFFFFF;
+    }
+
+    .modal-tab-btn {
+      padding: 12px 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-tab-btn.active {
+      color: var(--senff-blue);
+      border-bottom-color: var(--senff-red);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* FORM STYLES (FIEL À IMAGEM 2) */
+    .form-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .form-field label span.req {
+      color: var(--senff-red);
+      margin-right: 2px;
+    }
+
+    .form-input {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-dark);
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .form-input[readonly] {
+      background: #F8FAFC;
+      color: #475569;
+    }
+
+    /* SWITCH TOGGLE */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #CBD5E1;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--senff-blue);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* TAGS PERFIL DE ACESSO */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: #FFFFFF;
+      min-height: 42px;
+      max-height: 110px;
+      overflow-y: auto;
+    }
+
+    .tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      color: #334155;
+      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      color: #94A3B8;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .form-instruction {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-top: 16px;
+      padding: 12px;
+      background: #F8FAFC;
+      border-radius: 6px;
+      border-left: 3px solid var(--senff-blue);
+    }
+
+    .form-instruction strong {
+      color: var(--text-dark);
+    }
+
+    .form-instruction .alert-text {
+      color: var(--senff-red);
+      font-weight: 600;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* TIMELINE DE LOGS */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 24px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 11px;
+      width: 2px;
+      background: #CBD5E1;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -32px;
+      top: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 2px solid var(--senff-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      z-index: 2;
+    }
+
+    .timeline-dot.success {
+      border-color: var(--status-success);
+      color: var(--status-success);
+      background: #ECFDF5;
+    }
+
+    .timeline-dot.danger {
+      border-color: var(--senff-red);
+      color: var(--senff-red);
+      background: #FEF2F2;
+    }
+
+    .timeline-content {
+      background: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--senff-blue);
+    }
+
+    .timeline-time {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .timeline-desc {
+      font-size: 12.5px;
+      color: var(--text-dark);
+    }
+
+    /* JSON INSPECTOR */
+    .json-inspector {
+      margin-top: 14px;
+      background: #0F172A;
+      color: #E2E8F0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+      line-height: 1.5;
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    /* MODAL FOOTER */
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBFD;
+    }
+
+    .modal-footer-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    .confirm-dialog {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .confirm-dialog p {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: var(--text-dark);
+    }
+
+    .confirm-dialog .modal-footer {
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-confirm-yes {
+      background: #FFFFFF;
+      color: var(--senff-blue);
+      border: 1px solid var(--senff-blue);
+    }
+
+    /* TOAST ALERT */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 14px 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 2000;
+      animation: slideInUp 0.3s ease;
+      border-left: 4px solid var(--senff-red);
+    }
+
+    .toast-box.show {
+      display: flex;
+    }
+
+    @keyframes slideInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 1180px) {
+      .charts-container { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .filter-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR SENFFCONSIG -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo">SENFF<span>CONSIG</span></div>
+    </div>
+    <ul class="sidebar-menu">
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM2 4v16h20V4H2zm8 14V6h4v12h-4z"/></svg>
+        Propostas
+      </li>
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        Relatórios
+      </li>
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+        Gráficos de Vendas
+      </li>
+      
+      <div class="menu-section-title">Administração</div>
+      <li class="menu-item active">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Usuários
+      </li>
+      <li class="menu-item menu-item-nested">Promotoras</li>
+      <li class="menu-item menu-item-nested">Seguradoras</li>
+      <li class="menu-item menu-item-nested">Convênios</li>
+      <li class="menu-item menu-item-nested">Grupos de Permissão</li>
+
+      <div class="menu-section-title">Sistema</div>
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        Configurações
+      </li>
+    </ul>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="store-selector-box">
+        <label>Loja / Promotora:</label>
+        <select id="topbar-store-select" class="store-select" onchange="handleStoreFilterChange(this.value)">
+          <option value="ALL">Todas</option>
+          <option value="CONECT">CONECT</option>
+          <option value="FLAMEX">FLAMEX</option>
+          <option value="SOLIDA">SOLIDA</option>
+          <option value="DIRECT X">DIRECT X</option>
+          <option value="UNICA">UNICA</option>
+        </select>
+      </div>
+      <div class="user-profile-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        <span>Administrador</span>
+      </div>
+    </header>
+
+    <!-- PAGE CONTAINER -->
+    <main class="page-container">
+      
+      <!-- HEADER DA PÁGINA -->
+      <div class="page-header">
+        <div class="page-title-area">
+          <h1>Usuários & Jornada Biométrica</h1>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="window.location.href='edit-novo.html'">
+            + Novo Usuário
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI CARDS (BATER O OLHO E SABER) -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Base Total da Loja</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-total-users">26</span>
+            <span class="kpi-percent" style="background:#EFF6FF; color:#1D4ED8;">100%</span>
+          </div>
+          <span class="kpi-subtext">
+            <button type="button" class="kpi-detail-link" onclick="openKpiDetail(this)">Detalhar</button>
+            <template class="kpi-detail-source">24 base + 2 legado</template>
+          </span>
+        </div>
+
+        <div class="kpi-card success">
+          <span class="kpi-title">Conversão Real (Concluídos)</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-completed-users">14</span>
+            <span class="kpi-percent success" id="kpi-conversion-rate">58,3%</span>
+          </div>
+          <span class="kpi-subtext">
+            <button type="button" class="kpi-detail-link" onclick="openKpiDetail(this)">Detalhar</button>
+            <template class="kpi-detail-source">Tempo médio: 7 min</template>
+          </span>
+        </div>
+
+        <div class="kpi-card danger">
+          <span class="kpi-title">Links Expirados (Abandono 48h)</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value" id="kpi-expired-users">7</span>
+            <span class="kpi-percent danger">29,2%</span>
+          </div>
+          <span class="kpi-subtext">
+            <button type="button" class="kpi-detail-link" onclick="openKpiDetail(this)">Detalhar</button>
+            <template class="kpi-detail-source">71% nas ultimas 48hrs</template>
+          </span>
+        </div>
+
+        <div class="kpi-card warning">
+          <span class="kpi-title">Falhas Técnicas</span>
+          <div class="kpi-value-row">
+            <span class="kpi-value">9</span>
+            <span class="kpi-percent danger">23,8%</span>
+          </div>
+          <span class="kpi-subtext">
+            <button type="button" class="kpi-detail-link" onclick="openKpiDetail(this)">Detalhar</button>
+            <template class="kpi-detail-source">1 Doc ilegível (4,2%)<br>6 Timeout de conexão (7,9 %)<br>2 Em andamento (8,3%)</template>
+          </span>
+        </div>
+      </section>
+
+      <!-- PAINEL DE FILTROS -->
+      <section class="filter-panel">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">Loja/Promotora</label>
+            <select id="filter-store" class="filter-control" onchange="applyFilters()">
+              <option value="ALL" selected>Todas</option>
+              <option value="CONECT">CONECT</option>
+              <option value="FLAMEX">FLAMEX</option>
+              <option value="SOLIDA">SOLIDA</option>
+              <option value="DIRECT X">DIRECT X</option>
+              <option value="UNICA">UNICA</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Tipo de Usuário</label>
+            <select id="filter-type" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">Todos os Tipos</option>
+              <option value="Interno / Admin">Interno / Admin</option>
+              <option value="Interno / Digitador">Interno / Digitador</option>
+              <option value="Interno / Usuário">Interno / Usuário</option>
+              <option value="Externo / Digitador">Externo / Digitador</option>
+              <option value="Externo / Digitador in100">Externo / Digitador in100</option>
+              <option value="Externo / Gerente">Externo / Gerente</option>
+              <option value="Externo / Master">Externo / Master</option>
+              <option value="Externo / Master Gestor">Externo / Master Gestor</option>
+              <option value="Externo / Supervisor">Externo / Supervisor</option>
+              <option value="Externo / Usuário">Externo / Usuário</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Status da Biometria</label>
+            <select id="filter-status" class="filter-control" onchange="applyFilters()">
+              <option value="ALL">Todos os Status</option>
+              <option value="Biometria Concluída">Biometria Concluída (58,3%)</option>
+              <option value="Link Expirado (48h)">Link Expirado 48h (29,2%)</option>
+              <option value="Em Andamento">Em Andamento (8,3%)</option>
+              <option value="Finalizado sem Aprovação">Reprovado Documento (4,2%)</option>
+              <option value="Sem Biometria (Isento)">Legado Pré-Corte</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">Pesquisa Rápida</label>
+            <input type="text" id="filter-search" class="filter-control" placeholder="Operador, CPF, Contato ..." onkeyup="applyFilters()">
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn btn-outline" onclick="resetFilters()">Limpar</button>
+            <button class="btn btn-primary" onclick="applyFilters()">Pesquisar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TABELA DE GESTÃO RÁPIDA -->
+      <section class="table-container">
+        <div class="table-toolbar">
+          <div class="table-toolbar-left">
+            <div class="sms-note">* Lojas com chaveamento ativo disparam SMS com validade de 48 horas.</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="exportDataToCSV()">
+            <svg class="icon-excel" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#217346" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+              <path fill="#fff" d="M8.1 17.6l2.2-3.3-2.1-3.2h1.7l1.2 2.1 1.3-2.1h1.6l-2.1 3.3 2.2 3.2h-1.7l-1.4-2.2-1.3 2.2H8.1z"/>
+              <path fill="#185C37" d="M14 2v6h6"/>
+            </svg>
+            Exportar CSV
+          </button>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Operador</th>
+              <th>Loja/Promotora</th>
+              <th>Tipo Usuario</th>
+              <th>Contato</th>
+              <th>Status Biometria</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <!-- Linhas injetadas dinamicamente pelo JavaScript -->
+          </tbody>
+        </table>
+
+        <div class="table-footer">
+          <div>Exibindo <strong id="table-visible-count">26</strong> de <strong id="table-total-count">26</strong> operadores</div>
+          <div class="table-pager" id="table-pager"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="resendModal" class="modal-overlay" onclick="if (event.target.id === 'resendModal') closeResendModal()">
+    <div class="confirm-dialog">
+      <div class="modal-header">
+        <h2>Reenviar SMS</h2>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja reenviar o SMS de biometria?</p>
+        <p>Um novo link, válido por 48 horas, será enviado ao contato do operador.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-confirm-yes" onclick="confirmResend()">Sim</button>
+        <button type="button" class="btn btn-primary" onclick="closeResendModal()">Não</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="kpiModal" class="modal-overlay" onclick="if (event.target.id === 'kpiModal') closeKpiModal()">
+    <div class="kpi-detail-dialog">
+      <div class="modal-header">
+        <h2 id="kpi-modal-title">Detalhe</h2>
+        <button type="button" class="close-modal-btn" onclick="closeKpiModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="kpi-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- TOAST FEEDBACK -->
+  <div id="toast" class="toast-box">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#CD191E"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+    <span id="toast-message">Ação executada com sucesso.</span>
+  </div>
+
+  <!-- JAVASCRIPT: DADOS REAIS SANEADOS & LÓGICA INTERATIVA -->
+  <script>
+    // BASE DE DADOS SANEADA CONSOLIDADA (ARQUIVOS 04, 05 E 06)
+    const USERS_DATA = [
+      {
+        id: 101,
+        nome: "Carlos Eduardo Silva",
+        cpf: "123.456.789-01",
+        cpf_clean: "12345678901",
+        telefone: "(11) 98765-4321",
+        email: "carlos.silva@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 10:15:00",
+        hora: "10:15",
+        turno: "Manhã",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 501,
+        request_id: "req_unic_01a2b",
+        iniciado_em: "2026-09-04 10:15:02",
+        finalizado_em: "2026-09-04 10:22:15",
+        tempo_min: 7.2,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 102,
+        nome: "Mariana Souza Ramos",
+        cpf: "234.567.890-12",
+        cpf_clean: "23456789012",
+        telefone: "(11) 98765-4322",
+        email: "mariana.ramos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 11:30:00",
+        hora: "11:30",
+        turno: "Manhã",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 502,
+        request_id: "req_unic_02c3d",
+        iniciado_em: "2026-09-04 11:30:05",
+        finalizado_em: "2026-09-04 11:38:40",
+        tempo_min: 8.6,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 103,
+        nome: "Roberto Albuquerque",
+        cpf: "345.678.901-23",
+        cpf_clean: "34567890123",
+        telefone: "(11) 98765-4323",
+        email: "roberto.albuquerque@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 17:00:00",
+        hora: "17:00",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 503,
+        request_id: "req_unic_03e4f",
+        iniciado_em: "2026-09-04 17:00:02",
+        finalizado_em: "2026-09-06 17:00:02",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo de 48h (Sexta 17h -> Domingo)",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 104,
+        nome: "Juliana Mendes Dias",
+        cpf: "456.789.012-34",
+        cpf_clean: "45678901234",
+        telefone: "(11) 98765-4324",
+        email: "juliana.dias@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-05 14:20:00",
+        hora: "14:20",
+        turno: "Tarde",
+        dia_semana: "Sábado",
+        risco_fim_semana: "Sim (Fim de semana)",
+        jornada_id: 504,
+        request_id: "req_unic_04g5h",
+        iniciado_em: "2026-09-05 14:20:04",
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Em Andamento",
+        etapa_parada: "SMS Enviado (Aguardando)",
+        motivo: "SMS enviado - Dentro da janela de 48 horas",
+        responsabilidade: "Dentro do Prazo Regulamentar",
+        acao: "Aguardar prazo regulamentar",
+        bloqueado: false,
+        cooldown_ativo: true
+      },
+      {
+        id: 105,
+        nome: "Lucas Gabriel Santos",
+        cpf: "567.890.123-45",
+        cpf_clean: "56789012345",
+        telefone: "(11) 98765-4325",
+        email: "lucas.santos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 18:30:00",
+        hora: "18:30",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 506,
+        request_id: "req_unic_05i6j",
+        iniciado_em: "2026-09-04 18:30:05",
+        finalizado_em: "2026-09-06 18:30:05",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo de 48h (Sexta 18:30 -> Domingo)",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 106,
+        nome: "Fernanda Oliveira Lima",
+        cpf: "678.901.234-56",
+        cpf_clean: "67890123456",
+        telefone: "(11) 98765-4326",
+        email: "fernanda.lima@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-08 08:45:00",
+        hora: "08:45",
+        turno: "Manhã",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 507,
+        request_id: "req_unic_06k7l",
+        iniciado_em: "2026-09-08 08:45:03",
+        finalizado_em: "2026-09-08 08:52:10",
+        tempo_min: 7.1,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 107,
+        nome: "Thiago Barbosa Costa",
+        cpf: "789.012.345-67",
+        cpf_clean: "78901234567",
+        telefone: "(11) 98765-4327",
+        email: "thiago.costa@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-08 10:10:00",
+        hora: "10:10",
+        turno: "Manhã",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 508,
+        request_id: "req_unic_07m8n",
+        iniciado_em: "2026-09-08 10:10:04",
+        finalizado_em: "2026-09-08 10:14:20",
+        tempo_min: 4.3,
+        status_biometria: "Finalizado sem Aprovação",
+        etapa_parada: "Captura de Documento",
+        motivo: "Reprovado por divergência documental (foto com corte de borda/ilegível)",
+        responsabilidade: "Fricção Operacional / Documento",
+        acao: "Orientar operador a reenviar com documento legível",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 108,
+        nome: "Patricia Neves Prado",
+        cpf: "890.123.456-78",
+        cpf_clean: "89012345678",
+        telefone: "(11) 98765-4328",
+        email: "patricia.prado@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-09 11:00:00",
+        hora: "11:00",
+        turno: "Manhã",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 509,
+        request_id: "req_unic_08o9p",
+        iniciado_em: "2026-09-09 11:00:02",
+        finalizado_em: "2026-09-09 11:09:45",
+        tempo_min: 9.7,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 109,
+        nome: "Vinicius Barbarulo Neves",
+        cpf: "901.234.567-89",
+        cpf_clean: "90123456789",
+        telefone: "(77) 98147-4477",
+        email: "vinicius.neves@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-16 14:45:00",
+        hora: "14:45",
+        turno: "Tarde",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 510,
+        request_id: "req_unic_09q0r",
+        iniciado_em: "2026-09-16 14:45:04",
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Em Andamento",
+        etapa_parada: "SMS Enviado (Aguardando)",
+        motivo: "SMS enviado - Dentro da janela regulamentar de 48 horas",
+        responsabilidade: "Dentro do Prazo Regulamentar",
+        acao: "Aguardar prazo regulamentar",
+        bloqueado: false,
+        cooldown_ativo: true
+      },
+      {
+        id: 110,
+        nome: "Amanda Castro Pinto",
+        cpf: "012.345.678-90",
+        cpf_clean: "01234567890",
+        telefone: "(11) 98765-4330",
+        email: "amanda.pinto@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-10 13:15:00",
+        hora: "13:15",
+        turno: "Tarde",
+        dia_semana: "Quinta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 511,
+        request_id: "req_unic_10s1t",
+        iniciado_em: "2026-09-10 13:15:03",
+        finalizado_em: "2026-09-12 13:15:03",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 111,
+        nome: "Guilherme Vieira Rocha",
+        cpf: "112.233.445-56",
+        cpf_clean: "11223344556",
+        telefone: "(11) 98765-4331",
+        email: "guilherme.rocha@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 15:40:00",
+        hora: "15:40",
+        turno: "Tarde",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 512,
+        request_id: "req_unic_11u2v",
+        iniciado_em: "2026-09-11 15:40:05",
+        finalizado_em: "2026-09-11 15:48:30",
+        tempo_min: 8.4,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 112,
+        nome: "Camila Ferreira Melo",
+        cpf: "223.344.556-67",
+        cpf_clean: "22334455667",
+        telefone: "(11) 98765-4332",
+        email: "camila.melo@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 17:20:00",
+        hora: "17:20",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 513,
+        request_id: "req_unic_12w3x",
+        iniciado_em: "2026-09-11 17:20:03",
+        finalizado_em: "2026-09-13 17:20:03",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 113,
+        nome: "Rodrigo Martins Cruz",
+        cpf: "334.455.667-78",
+        cpf_clean: "33445566778",
+        telefone: "(11) 98765-4333",
+        email: "rodrigo.cruz@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-12 11:10:00",
+        hora: "11:10",
+        turno: "Manhã",
+        dia_semana: "Sábado",
+        risco_fim_semana: "Sim (Fim de semana)",
+        jornada_id: 514,
+        request_id: "req_unic_13y4z",
+        iniciado_em: "2026-09-12 11:10:02",
+        finalizado_em: "2026-09-12 11:17:15",
+        tempo_min: 7.2,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 114,
+        nome: "Beatriz Azevedo Farias",
+        cpf: "445.566.778-89",
+        cpf_clean: "44556677889",
+        telefone: "(11) 98765-4334",
+        email: "beatriz.farias@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 18:00:00",
+        hora: "18:00",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 515,
+        request_id: "req_unic_14a5b",
+        iniciado_em: "2026-09-11 18:00:04",
+        finalizado_em: "2026-09-13 18:00:04",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 115,
+        nome: "Diego Henrique Campos",
+        cpf: "556.677.889-90",
+        cpf_clean: "55667788990",
+        telefone: "(11) 98765-4335",
+        email: "diego.campos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-14 16:30:00",
+        hora: "16:30",
+        turno: "Tarde",
+        dia_semana: "Segunda-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 516,
+        request_id: "req_unic_15c6d",
+        iniciado_em: "2026-09-14 16:30:02",
+        finalizado_em: "2026-09-14 16:36:50",
+        tempo_min: 6.8,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 119,
+        nome: "Julio Cesar Batista",
+        cpf: "667.788.991-11",
+        cpf_clean: "66778899111",
+        telefone: "(11) 98765-4339",
+        email: "julio.batista@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-09 15:20:00",
+        hora: "15:20",
+        turno: "Tarde",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 518,
+        request_id: "req_unic_17g8h",
+        iniciado_em: "2026-09-09 15:20:02",
+        finalizado_em: "2026-09-09 15:26:32",
+        tempo_min: 6.5,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 120,
+        nome: "Larissa Fontes Ribeiro",
+        cpf: "778.899.002-22",
+        cpf_clean: "77889900222",
+        telefone: "(11) 98765-4340",
+        email: "larissa.ribeiro@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-14 10:40:00",
+        hora: "10:40",
+        turno: "Manhã",
+        dia_semana: "Segunda-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 519,
+        request_id: "req_unic_18i9j",
+        iniciado_em: "2026-09-14 10:40:03",
+        finalizado_em: "2026-09-14 10:49:09",
+        tempo_min: 9.1,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 121,
+        nome: "Marcelo Pires Nogueira",
+        cpf: "889.900.113-33",
+        cpf_clean: "88990011333",
+        telefone: "(11) 98765-4341",
+        email: "marcelo.nogueira@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-15 09:15:00",
+        hora: "09:15",
+        turno: "Manhã",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 520,
+        request_id: "req_unic_19k0l",
+        iniciado_em: "2026-09-15 09:15:04",
+        finalizado_em: "2026-09-15 09:20:34",
+        tempo_min: 5.5,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 122,
+        nome: "Renata Vasconcelos",
+        cpf: "990.011.224-44",
+        cpf_clean: "99001122444",
+        telefone: "(11) 98765-4342",
+        email: "renata.vasconcelos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-15 14:10:00",
+        hora: "14:10",
+        turno: "Tarde",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 521,
+        request_id: "req_unic_20m1n",
+        iniciado_em: "2026-09-15 14:10:02",
+        finalizado_em: "2026-09-15 14:18:02",
+        tempo_min: 8.0,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 123,
+        nome: "Felipe Cardoso Lins",
+        cpf: "001.122.335-55",
+        cpf_clean: "00112233555",
+        telefone: "(11) 98765-4343",
+        email: "felipe.lins@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-16 09:30:00",
+        hora: "09:30",
+        turno: "Manhã",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 522,
+        request_id: "req_unic_21o2p",
+        iniciado_em: "2026-09-16 09:30:03",
+        finalizado_em: "2026-09-16 09:37:33",
+        tempo_min: 7.5,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 124,
+        nome: "Tatiane Duarte Prado",
+        cpf: "112.233.446-66",
+        cpf_clean: "11223344666",
+        telefone: "(11) 98765-4344",
+        email: "tatiane.prado@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-16 11:15:00",
+        hora: "11:15",
+        turno: "Manhã",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 523,
+        request_id: "req_unic_22q3r",
+        iniciado_em: "2026-09-16 11:15:05",
+        finalizado_em: "2026-09-16 11:23:17",
+        tempo_min: 8.2,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 125,
+        nome: "Vitor Hugo Moreira",
+        cpf: "223.344.557-77",
+        cpf_clean: "22334455777",
+        telefone: "(11) 98765-4345",
+        email: "vitor.moreira@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 10:00:00",
+        hora: "10:00",
+        turno: "Manhã",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 524,
+        request_id: "req_unic_23s4t",
+        iniciado_em: "2026-09-11 10:00:02",
+        finalizado_em: "2026-09-11 10:07:56",
+        tempo_min: 7.9,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 126,
+        nome: "Bruna Toledo Moraes",
+        cpf: "334.455.668-88",
+        cpf_clean: "33445566888",
+        telefone: "(11) 98765-4346",
+        email: "bruna.moraes@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 18:45:00",
+        hora: "18:45",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 525,
+        request_id: "req_unic_24u5v",
+        iniciado_em: "2026-09-11 18:45:04",
+        finalizado_em: "2026-09-13 18:45:04",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 127,
+        nome: "Danilo Borges Cunha",
+        cpf: "445.566.779-99",
+        cpf_clean: "44556677999",
+        telefone: "(11) 98765-4347",
+        email: "danilo.cunha@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-12 16:00:00",
+        hora: "16:00",
+        turno: "Tarde",
+        dia_semana: "Sábado",
+        risco_fim_semana: "Sim (Fim de semana)",
+        jornada_id: 526,
+        request_id: "req_unic_25w6x",
+        iniciado_em: "2026-09-12 16:00:02",
+        finalizado_em: "2026-09-14 16:00:02",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      // LEGADO PRÉ-CHAVEAMENTO (ISENTO DE BIOMETRIA)
+      {
+        id: 117,
+        nome: "Joao Paulo Matos",
+        cpf: "778.899.001-12",
+        cpf_clean: "77889900112",
+        telefone: "(11) 98765-4337",
+        email: "joao.matos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Legado (Pré-Chaveamento)",
+        cadastrado_em: "2026-08-25 14:00:00",
+        hora: "14:00",
+        turno: "Tarde",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: null,
+        request_id: null,
+        iniciado_em: null,
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Sem Biometria (Isento)",
+        etapa_parada: "Sem Biometria (Isento)",
+        motivo: "Usuário cadastrado antes da data de obrigatoriedade (03/09/2026)",
+        responsabilidade: "Regra de Negócio (Legado)",
+        acao: "Sem ação imediata (Aguardar fase de migração)",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 118,
+        nome: "Ana Paula Diniz",
+        cpf: "889.900.112-23",
+        cpf_clean: "88990011223",
+        telefone: "(11) 98765-4338",
+        email: "ana.diniz@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Legado (Pré-Chaveamento)",
+        cadastrado_em: "2026-08-28 16:20:00",
+        hora: "16:20",
+        turno: "Tarde",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: null,
+        request_id: null,
+        iniciado_em: null,
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Sem Biometria (Isento)",
+        etapa_parada: "Sem Biometria (Isento)",
+        motivo: "Usuário cadastrado antes da data de obrigatoriedade (03/09/2026)",
+        responsabilidade: "Regra de Negócio (Legado)",
+        acao: "Sem ação imediata (Aguardar fase de migração)",
+        bloqueado: false,
+        cooldown_ativo: false
+      }
+    ];
+
+    let currentSelectedUserId = null;
+    let currentPage = 1;
+    let currentRows = USERS_DATA;
+    const PAGE_SIZE = 10;
+
+    // INICIALIZAÇÃO
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTable(USERS_DATA);
+      updateKpis(USERS_DATA);
+    });
+
+    const PROMOTORAS = {
+      "CONECT": "12.345.678/0001-90",
+      "FLAMEX": "23.456.789/0001-01",
+      "SOLIDA": "34.567.890/0001-12",
+      "DIRECT X": "45.678.901/0001-23",
+      "UNICA": "56.789.012/0001-34"
+    };
+    const PROMOTORA_NOMES = Object.keys(PROMOTORAS);
+
+    function promotorasDoUsuario(user) {
+      const indice = Math.abs(user.id - 101) % PROMOTORA_NOMES.length;
+      const nomes = [PROMOTORA_NOMES[indice]];
+      if (user.id % 7 === 0) nomes.push(PROMOTORA_NOMES[(indice + 1) % PROMOTORA_NOMES.length]);
+      return nomes;
+    }
+
+    function tipoUsuarioLabel(user) {
+      const mapa = {
+        101: "Externo / Master",
+        102: "Externo / Gerente",
+        103: "Externo / Digitador",
+        104: "Externo / Digitador in100",
+        105: "Externo / Master Gestor",
+        106: "Externo / Supervisor",
+        107: "Externo / Usuário",
+        108: "Interno / Admin",
+        109: "Interno / Digitador",
+        110: "Interno / Usuário",
+        111: "Externo / Digitador",
+        112: "Externo / Digitador in100",
+        113: "Externo / Gerente",
+        114: "Externo / Master",
+        115: "Externo / Master Gestor",
+        117: "Externo / Master Gestor",
+        118: "Externo / Supervisor",
+        119: "Externo / Supervisor",
+        120: "Externo / Usuário",
+        121: "Interno / Admin",
+        122: "Interno / Digitador",
+        123: "Interno / Usuário",
+        124: "Externo / Digitador",
+        125: "Externo / Digitador in100",
+        126: "Externo / Gerente",
+        127: "Externo / Master"
+      };
+      return mapa[user.id] || "Externo / Usuário";
+    }
+
+    function openKpiDetail(button) {
+      const card = button.closest(".kpi-card");
+      const source = button.parentElement.querySelector(".kpi-detail-source");
+      document.getElementById("kpi-modal-title").innerText = card.querySelector(".kpi-title").innerText;
+      document.getElementById("kpi-modal-body").innerHTML = source.innerHTML;
+      document.getElementById("kpiModal").classList.add("active");
+    }
+
+    function closeKpiModal() {
+      document.getElementById("kpiModal").classList.remove("active");
+    }
+
+    // RENDERIZAR TABELA
+    function renderTable(data) {
+      currentRows = data;
+      const tbody = document.getElementById("users-table-body");
+      tbody.innerHTML = "";
+      const total = data.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (currentPage > pages) currentPage = pages;
+      if (currentPage < 1) currentPage = 1;
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const pageRows = data.slice(start, start + PAGE_SIZE);
+
+      if (pageRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">Nenhum operador encontrado com os filtros aplicados.</td></tr>`;
+        document.getElementById("table-visible-count").innerText = "0";
+        document.getElementById("table-total-count").innerText = String(total);
+        renderPager(1);
+        return;
+      }
+
+      pageRows.forEach(user => {
+        const tr = document.createElement("tr");
+        const tipoPartes = tipoUsuarioLabel(user).split(" / ");
+        const tipoLinha = tipoPartes[0];
+        const perfilLinha = tipoPartes[1] || "";
+        const promotoras = promotorasDoUsuario(user);
+        const promotoraHtml = promotoras.map(nome =>
+          `<div style="font-weight:700; color:var(--senff-blue);">${nome}</div>`
+        ).join("");
+
+        let badgeHtml = "";
+        if (user.status_biometria === "Biometria Concluída") {
+          badgeHtml = `<span class="badge badge-concluido"><span class="status-dot dot-success"></span> Concluída</span>`;
+        } else if (user.status_biometria === "Link Expirado (48h)") {
+          badgeHtml = `<span class="badge badge-expirado"><span class="status-dot dot-danger"></span> Expirado (48h)</span>`;
+        } else if (user.status_biometria === "Em Andamento") {
+          badgeHtml = `<span class="badge badge-andamento"><span class="status-dot dot-warning"></span> Em Andamento</span>`;
+        } else if (user.status_biometria === "Finalizado sem Aprovação") {
+          badgeHtml = `<span class="badge badge-reprovado"><span class="status-dot dot-orange"></span> Reprovado Doc</span>`;
+        } else {
+          badgeHtml = `<span class="badge badge-legado"><span class="status-dot dot-gray"></span> Isento (Legado)</span>`;
+        }
+
+        const podeReenviar = user.status_biometria === "Link Expirado (48h)";
+
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:700; color:var(--senff-blue);">${user.nome}</div>
+            <div style="font-size:11.5px; color:var(--text-muted); font-family:monospace;">${user.cpf}</div>
+          </td>
+          <td>${promotoraHtml}</td>
+          <td>
+            <div style="font-weight:700; color:var(--senff-blue);">${tipoLinha}</div>
+            <div style="font-size:11.5px; color:var(--text-muted);">${perfilLinha}</div>
+          </td>
+          <td>
+            <div style="font-size:12.5px; font-weight:600;">${user.telefone}</div>
+            <div style="font-size:11.5px; color:var(--text-muted);">${user.email}</div>
+          </td>
+          <td>${badgeHtml}</td>
+          <td>
+            <div class="action-stack">
+              <button class="btn btn-outline btn-sm" onclick="window.location.href='edit-novo.html?id=${user.id}'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>Editar</button>
+              ${podeReenviar ? `<button class="btn btn-danger btn-sm" onclick="openResendModal(${user.id})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Reenviar SMS</button>` : ""}
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      const end = start + pageRows.length;
+      document.getElementById("table-visible-count").innerText = `${start + 1}–${end}`;
+      document.getElementById("table-total-count").innerText = String(total);
+      renderPager(pages);
+    }
+
+    function renderPager(pages) {
+      const pager = document.getElementById("table-pager");
+      const buttons = [];
+      buttons.push(`<button type="button" class="btn btn-outline btn-sm" onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? "disabled" : ""}>Anterior</button>`);
+      for (let page = 1; page <= pages; page += 1) {
+        const active = page === currentPage ? "btn-primary" : "btn-outline";
+        buttons.push(`<button type="button" class="btn ${active} btn-sm" onclick="goToPage(${page})">${page}</button>`);
+      }
+      buttons.push(`<button type="button" class="btn btn-outline btn-sm" onclick="goToPage(${currentPage + 1})" ${currentPage >= pages ? "disabled" : ""}>Próxima</button>`);
+      pager.innerHTML = buttons.join("");
+    }
+
+    function goToPage(page) {
+      const pages = Math.max(1, Math.ceil(currentRows.length / PAGE_SIZE));
+      if (page < 1 || page > pages || page === currentPage) return;
+      currentPage = page;
+      renderTable(currentRows);
+    }
+
+    // ATUALIZAR KPIS
+    function updateKpis(data) {
+      const posCorte = data.filter(u => u.tipo === "Novo Usuário");
+      const total = posCorte.length;
+      const concluidos = posCorte.filter(u => u.status_biometria === "Biometria Concluída").length;
+      const expirados = posCorte.filter(u => u.status_biometria === "Link Expirado (48h)").length;
+      
+      const convRate = total > 0 ? ((concluidos / total) * 100).toFixed(1) : 0;
+
+      document.getElementById("kpi-total-users").innerText = data.length;
+      document.getElementById("kpi-completed-users").innerText = concluidos;
+      document.getElementById("kpi-conversion-rate").innerText = `${convRate}%`;
+      document.getElementById("kpi-expired-users").innerText = expirados;
+    }
+
+    // FILTROS EM TEMPO REAL
+    function applyFilters() {
+      const storeVal = document.getElementById("filter-store").value;
+      const statusVal = document.getElementById("filter-status").value;
+      const typeVal = document.getElementById("filter-type").value;
+      const searchVal = document.getElementById("filter-search").value.toLowerCase().trim();
+
+      const filtered = USERS_DATA.filter(user => {
+        if (storeVal !== "ALL" && !promotorasDoUsuario(user).includes(storeVal)) return false;
+        if (statusVal !== "ALL" && user.status_biometria !== statusVal) return false;
+        if (typeVal !== "ALL" && tipoUsuarioLabel(user) !== typeVal) return false;
+        
+        if (searchVal !== "") {
+          const matchNome = user.nome.toLowerCase().includes(searchVal);
+          const matchCpf = user.cpf_clean.includes(searchVal.replace(/\D/g, ''));
+          const matchEmail = user.email.toLowerCase().includes(searchVal);
+          const matchTel = user.telefone.replace(/\D/g, "").includes(searchVal.replace(/\D/g, "")) && searchVal.replace(/\D/g, "") !== "";
+          if (!matchNome && !matchCpf && !matchEmail && !matchTel) return false;
+        }
+
+        return true;
+      });
+
+      currentPage = 1;
+      renderTable(filtered);
+      updateKpis(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById("filter-store").value = "ALL";
+      document.getElementById("topbar-store-select").value = "ALL";
+      document.getElementById("filter-status").value = "ALL";
+      document.getElementById("filter-type").value = "ALL";
+      document.getElementById("filter-search").value = "";
+      applyFilters();
+    }
+
+    function handleStoreFilterChange(val) {
+      document.getElementById("filter-store").value = val;
+      applyFilters();
+    }
+
+    let resendUserId = null;
+
+    function openResendModal(userId) {
+      const user = USERS_DATA.find(u => u.id === userId);
+      if (!user || user.status_biometria !== "Link Expirado (48h)") return;
+      resendUserId = userId;
+      document.getElementById("resendModal").classList.add("active");
+    }
+
+    function closeResendModal() {
+      resendUserId = null;
+      document.getElementById("resendModal").classList.remove("active");
+    }
+
+    function confirmResend() {
+      const user = USERS_DATA.find(u => u.id === resendUserId);
+      closeResendModal();
+      if (!user || user.status_biometria !== "Link Expirado (48h)") return;
+
+      user.cooldown_ativo = true;
+      user.status_biometria = "Em Andamento";
+      user.motivo = "SMS reenviado pelo operador em " + new Date().toLocaleTimeString();
+      user.iniciado_em = new Date().toISOString().replace('T', ' ').substring(0, 19);
+
+      applyFilters();
+      showToast(`SMS reenviado com sucesso para ${user.nome} (${user.telefone})!`);
+    }
+
+    function exportDataToCSV() {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "ID,Nome,CPF,Telefone,Email,Loja,Turno,Status Biometria,Tempo Minutos,Motivo Detalhado\n";
+
+      USERS_DATA.forEach(u => {
+        csvContent += `"${u.id}","${u.nome}","${u.cpf}","${u.telefone}","${u.email}","${u.loja}","${u.turno}","${u.status_biometria}","${u.tempo_min || ''}","${u.motivo}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `relatorio_biometria_senffconsig_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Download do relatório CSV iniciado com sucesso!");
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      document.getElementById("toast-message").innerText = msg;
+      t.classList.add("show");
+      setTimeout(() => {
+        t.classList.remove("show");
+      }, 3500);
+    }
+
+  </script>
+</body>
+</html>

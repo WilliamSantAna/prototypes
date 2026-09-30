@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SENFFCONSIG - Editar Usuário</title>
+  <style>
+    :root {
+      --senff-red: #CD191E;
+      --senff-red-hover: #A31216;
+      --senff-blue: #002855;
+      --senff-blue-dark: #001A38;
+      --senff-blue-light: #1A4480;
+      --senff-sidebar: #0F1E36;
+      --senff-sidebar-active: #1D3153;
+      --text-dark: #2D3748;
+      --text-muted: #718096;
+      --bg-body: #F4F6F9;
+      --bg-card: #FFFFFF;
+      --border-color: #E2E8F0;
+      
+      --status-success: #10B981;
+      --status-success-bg: #D1FAE5;
+      --status-warning: #F59E0B;
+      --status-warning-bg: #FEF3C7;
+      --status-danger: #EF4444;
+      --status-danger-bg: #FEE2E2;
+      --status-orange: #F97316;
+      --status-orange-bg: #FFEDD5;
+      --status-gray: #6B7280;
+      --status-gray-bg: #F3F4F6;
+      
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px;
+      background-color: var(--senff-sidebar);
+      color: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.3s ease;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-logo {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-logo span {
+      color: var(--senff-red);
+      margin-left: 2px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 16px 0;
+      flex-grow: 1;
+    }
+
+    .menu-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7A8CA3;
+      padding: 16px 20px 8px 20px;
+      font-weight: 600;
+    }
+
+    .menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #B5C3D6;
+      text-decoration: none;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #FFFFFF;
+    }
+
+    .menu-item.active {
+      background-color: #2F3E5A;
+      color: #FFFFFF;
+      border-left: 4px solid var(--senff-red);
+      font-weight: 600;
+    }
+
+    .menu-item-nested {
+      padding-left: 36px;
+      font-size: 13px;
+    }
+
+    .menu-item svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    /* MAIN CONTENT */
+    .main-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      height: 64px;
+      background-color: #FFFFFF;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 32px;
+      gap: 24px;
+    }
+
+    .store-selector-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .store-selector-box label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .store-select {
+      padding: 7px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--senff-blue);
+      background-color: #FFFFFF;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--senff-blue);
+      cursor: pointer;
+    }
+
+    /* PAGE CONTAINER */
+    .page-container {
+      padding: 24px 32px 48px 32px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* HEADER & BREADCRUMB */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .page-title-area h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-pilot {
+      background: #E0E7FF;
+      color: #3730A3;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--senff-blue);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--senff-blue-light);
+    }
+
+    .btn-danger {
+      background-color: var(--senff-red);
+      color: #FFFFFF;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--senff-red-hover);
+    }
+
+    .btn-outline {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      color: var(--text-dark);
+    }
+
+    .btn-outline:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    /* KPI CARDS */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--senff-blue);
+    }
+
+    .kpi-card.success::before { background: var(--status-success); }
+    .kpi-card.warning::before { background: var(--status-warning); }
+    .kpi-card.danger::before { background: var(--senff-red); }
+
+    .kpi-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--senff-blue);
+    }
+
+    .kpi-percent {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .kpi-percent.success { background: var(--status-success-bg); color: var(--status-success); }
+    .kpi-percent.danger { background: var(--status-danger-bg); color: var(--senff-red); }
+    .kpi-percent.warning { background: var(--status-warning-bg); color: var(--status-warning); }
+
+    .kpi-subtext {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* CHARTS SECTION */
+    .charts-container {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr 1.1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .chart-card {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .chart-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--senff-blue);
+    }
+
+    .chart-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: #F1F5F9;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 200px;
+      width: 100%;
+    }
+
+    /* FILTERS PANEL */
+    .filter-panel {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr) auto;
+      gap: 14px;
+      align-items: flex-end;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .filter-control {
+      width: 100%;
+      height: 38px;
+      padding: 6px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-dark);
+      background-color: #FFFFFF;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .filter-control:focus {
+      border-color: var(--senff-blue);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* TABLE SECTION */
+    .table-container {
+      background: #FFFFFF;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      background: #FAFBFD;
+    }
+
+    .table-toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .table-counts {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .table-counts strong {
+      color: var(--senff-blue);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background-color: #F8FAFC;
+      color: var(--senff-blue);
+      font-weight: 700;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-dark);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr:hover {
+      background-color: #F9FAFC;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-concluido {
+      background-color: var(--status-success-bg);
+      color: #065F46;
+    }
+
+    .badge-expirado {
+      background-color: var(--status-danger-bg);
+      color: var(--senff-red);
+    }
+
+    .badge-andamento {
+      background-color: var(--status-warning-bg);
+      color: #92400E;
+    }
+
+    .badge-reprovado {
+      background-color: var(--status-orange-bg);
+      color: #9A3412;
+    }
+
+    .badge-legado {
+      background-color: var(--status-gray-bg);
+      color: #374151;
+    }
+
+    .badge-risco {
+      background-color: #FEE2E2;
+      color: #991B1B;
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 3px;
+    }
+
+    .badge-turno-manha {
+      background-color: #ECFDF5;
+      color: #047857;
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-success { background-color: var(--status-success); }
+    .dot-danger { background-color: var(--status-danger); }
+    .dot-warning { background-color: var(--status-warning); }
+    .dot-orange { background-color: var(--status-orange); }
+    .dot-gray { background-color: var(--status-gray); }
+
+    /* PAGINATION */
+    .table-footer {
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBFD;
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    /* MODAL ESTILO SENFFCONSIG */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 26, 56, 0.6);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 960px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBFD;
+    }
+
+    .modal-header h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .close-modal-btn {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    /* TABS */
+    .modal-tabs {
+      display: flex;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--border-color);
+      background: #FFFFFF;
+    }
+
+    .modal-tab-btn {
+      padding: 12px 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-tab-btn.active {
+      color: var(--senff-blue);
+      border-bottom-color: var(--senff-red);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* FORM STYLES (FIEL À IMAGEM 2) */
+    .form-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-field label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .form-field label span.req {
+      color: var(--senff-red);
+      margin-right: 2px;
+    }
+
+    .form-input {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--text-dark);
+      background: #FFFFFF;
+      outline: none;
+    }
+
+    .form-input[readonly] {
+      background: #F8FAFC;
+      color: #475569;
+    }
+
+    /* SWITCH TOGGLE */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #CBD5E1;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--senff-blue);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* TAGS PERFIL DE ACESSO */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 5px 5px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background: #FFFFFF;
+      min-height: 33px;
+      max-height: 110px;
+      overflow-y: auto;
+    }
+
+    .tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #F1F5F9;
+      border: 1px solid #E2E8F0;
+      color: #334155;
+      font-size: 11.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .tag-remove {
+      cursor: pointer;
+      color: #94A3B8;
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .form-instruction {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-top: 16px;
+      padding: 12px;
+      background: #F8FAFC;
+      border-radius: 6px;
+      border-left: 3px solid var(--senff-blue);
+    }
+
+    .form-instruction strong {
+      color: var(--text-dark);
+    }
+
+    .form-instruction .alert-text {
+      color: var(--senff-red);
+      font-weight: 600;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* TIMELINE DE LOGS */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+      margin-bottom: 24px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      bottom: 4px;
+      left: 11px;
+      width: 2px;
+      background: #CBD5E1;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -32px;
+      top: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 2px solid var(--senff-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--senff-blue);
+      z-index: 2;
+    }
+
+    .timeline-dot.success {
+      border-color: var(--status-success);
+      color: var(--status-success);
+      background: #ECFDF5;
+    }
+
+    .timeline-dot.danger {
+      border-color: var(--senff-red);
+      color: var(--senff-red);
+      background: #FEF2F2;
+    }
+
+    .timeline-content {
+      background: #F8FAFC;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--senff-blue);
+    }
+
+    .timeline-time {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .timeline-desc {
+      font-size: 12.5px;
+      color: var(--text-dark);
+    }
+
+    /* JSON INSPECTOR */
+    .json-inspector {
+      margin-top: 14px;
+      background: #0F172A;
+      color: #E2E8F0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 11.5px;
+      line-height: 1.5;
+      max-height: 160px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    /* MODAL FOOTER */
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FAFBFD;
+    }
+
+    .modal-footer-right {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* TOAST ALERT */
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 14px 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow-lg);
+      font-size: 13px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 2000;
+      animation: slideInUp 0.3s ease;
+      border-left: 4px solid var(--senff-red);
+    }
+
+    .toast-box.show {
+      display: flex;
+    }
+
+    @keyframes slideInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (max-width: 1180px) {
+      .charts-container { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .filter-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 6px;
+      color: var(--senff-blue);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .edit-page {
+      background: #FFFFFF;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .form-input:disabled {
+      background: #F8FAFC;
+      color: #475569;
+    }
+
+    .toggle-pair {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .info-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .info-i {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1px solid var(--senff-blue);
+      color: var(--senff-blue);
+      background: #FFFFFF;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .info-tip {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 22px;
+      width: 260px;
+      background: var(--senff-blue);
+      color: #FFFFFF;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.4;
+      padding: 8px 10px;
+      border-radius: 6px;
+      z-index: 6;
+    }
+
+    .info-tip.open {
+      display: block;
+    }
+
+    #tip-block {
+      left: auto;
+      right: 0;
+    }
+
+    .confirm-dialog {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .confirm-dialog p {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      color: var(--text-dark);
+    }
+
+    .confirm-dialog .modal-footer {
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn-confirm-yes {
+      background: #FFFFFF;
+      color: var(--senff-blue);
+      border: 1px solid var(--senff-blue);
+    }
+
+    .confirm-dialog.wide {
+      max-width: 560px;
+    }
+
+    .save-change-list {
+      margin: 0 0 14px;
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--text-dark);
+    }
+
+    .save-change-list li {
+      margin-bottom: 6px;
+    }
+
+    .save-justificativa {
+      width: 100%;
+      min-height: 88px;
+      resize: vertical;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: inherit;
+      font-size: 13px;
+    }
+
+    .save-error {
+      display: none;
+      color: var(--senff-red);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR SENFFCONSIG -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-logo">SENFF<span>CONSIG</span></div>
+    </div>
+    <ul class="sidebar-menu">
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM2 4v16h20V4H2zm8 14V6h4v12h-4z"/></svg>
+        Propostas
+      </li>
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        Relatórios
+      </li>
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+        Gráficos de Vendas
+      </li>
+      
+      <div class="menu-section-title">Administração</div>
+      <li class="menu-item active">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Usuários
+      </li>
+      <li class="menu-item menu-item-nested">Promotoras</li>
+      <li class="menu-item menu-item-nested">Seguradoras</li>
+      <li class="menu-item menu-item-nested">Convênios</li>
+      <li class="menu-item menu-item-nested">Grupos de Permissão</li>
+
+      <div class="menu-section-title">Sistema</div>
+      <li class="menu-item">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+        Configurações
+      </li>
+    </ul>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="store-selector-box">
+        <label>Loja / Promotora:</label>
+        <select id="topbar-store-select" class="store-select" onchange="handleStoreFilterChange(this.value)">
+          <option value="082">082 - Nova Promotora (Chaveada em 03/09/2026)</option>
+          <option value="ALL">Todas as Lojas</option>
+        </select>
+      </div>
+      <div class="user-profile-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        <span>Administrador</span>
+      </div>
+    </header>
+
+    <main class="page-container">
+      <div class="page-header">
+        <div class="page-title-area">
+          <a class="back-link" href="index-novo.html">← Usuários</a>
+          <h1 id="page-title">Editar Usuário</h1>
+          <p class="page-subtitle" id="page-subtitle"></p>
+        </div>
+      </div>
+
+      <section class="edit-page">
+        <div class="modal-tabs">
+          <button id="tabBtnCadastral" class="modal-tab-btn active" onclick="switchModalTab('cadastral')">
+            Dados Cadastrais & Permissões
+          </button>
+          <button id="tabBtnAuditoria" class="modal-tab-btn" onclick="switchModalTab('auditoria')">
+            Auditoria & Logs Único ID Cloud
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div id="tabCadastral" class="tab-content active">
+            <div class="form-grid-4">
+              <div class="form-field" style="grid-column: span 1;">
+                <label><span class="req">*</span> Nome Completo</label>
+                <input type="text" id="modal-field-nome" class="form-input" value="">
+              </div>
+              <div class="form-field">
+                <label><span class="req">*</span> CPF</label>
+                <input type="text" id="modal-field-cpf" class="form-input" value="" disabled>
+              </div>
+              <div class="form-field">
+                <label><span class="req">*</span> E-mail</label>
+                <input type="text" id="modal-field-email" class="form-input" value="">
+              </div>
+              <div class="form-field">
+                <label><span class="req">*</span> Tipo de Usuário</label>
+                <select id="modal-field-tipo" class="form-input">
+                  <option value="Admin">Admin</option>
+                  <option value="Digitador">Digitador</option>
+                  <option value="Usuário">Usuário</option>
+                  <option value="Digitador in100">Digitador in100</option>
+                  <option value="Gerente">Gerente</option>
+                  <option value="Master">Master</option>
+                  <option value="Master Gestor">Master Gestor</option>
+                  <option value="Supervisor">Supervisor</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-4">
+              <div class="form-field">
+                <label><span class="req">*</span> Telefone (SMS Único)</label>
+                <input type="text" id="modal-field-tel" class="form-input" value="">
+              </div>
+              <div class="form-field">
+                <label><span class="req">*</span> Promotoras</label>
+                <div class="tags-container" id="modal-field-loja"></div>
+              </div>
+              <div class="form-field">
+                <label>Status da Biometria</label>
+                <input type="text" id="modal-field-biometria-status" class="form-input" disabled value="">
+              </div>
+              <div class="form-field">
+                <div class="toggle-pair">
+                  <div>
+                    <label class="info-wrap">
+                      Bloquear
+                      <button type="button" class="info-i" onclick="toggleInfo(event, 'tip-bloquear')">i</button>
+                      <span class="info-tip" id="tip-bloquear">Ligado: Usuário bloqueado de fazer login/acesso ao sistema.</span>
+                    </label>
+                    <div class="toggle-row">
+                      <label class="switch">
+                        <input type="checkbox" id="modal-field-block1">
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="info-wrap">
+                      Usuário Block?
+                      <button type="button" class="info-i" onclick="toggleInfo(event, 'tip-block')">i</button>
+                      <span class="info-tip" id="tip-block">Ligado: As propostas criadas por este usuário vão para análise manual na validação de dados<br>Desligado: essa validação é aprovada automaticamente.</span>
+                    </label>
+                    <div class="toggle-row">
+                      <label class="switch">
+                        <input type="checkbox" id="modal-field-block2">
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-field" style="margin-top: 14px;">
+              <label><span class="req">*</span> Perfil de Acesso</label>
+              <div class="tags-container" id="modal-field-perfis">
+                <span class="tag-item">Acesso básico <span class="tag-remove">&times;</span></span>
+                <span class="tag-item">SERPRO - Ações Manuais <span class="tag-remove">&times;</span></span>
+                <span class="tag-item">Auto-Regulação - Auditoria NMP <span class="tag-remove">&times;</span></span>
+                <span class="tag-item">Unico ID Cloud - Ações manuais <span class="tag-remove">&times;</span></span>
+                <span class="tag-item">Protocol Document - Administração <span class="tag-remove">&times;</span></span>
+              </div>
+            </div>
+
+            <div class="form-instruction">
+              <p>O <strong>Tipo de Usuário</strong> tem como objetivo auxiliar no gerenciamento dos usuários do sistema, mas não é utilizado para definir permissões de acesso.</p>
+              <p>Os <strong>Perfis de Acesso</strong> são responsáveis por determinar as permissões de acesso do usuário. Selecione os perfis que deseja associar ao usuário.</p>
+              <p>O grupo de permissão <strong>Acesso Básico</strong> oferece os acessos mínimos necessários para que o usuário consiga utilizar o sistema.</p>
+              <span class="alert-text">Atenção: O Acesso Básico é necessário para todos os usuários. Caso o usuário não possua o Acesso Básico, ele não conseguirá acessar o sistema.</span>
+            </div>
+          </div>
+
+          <div id="tabAuditoria" class="tab-content">
+            <h4 style="font-size: 13.5px; font-weight: 700; color: var(--senff-blue); margin-bottom: 14px;">
+              Trilha Cronológica de Eventos & Webhooks
+            </h4>
+
+            <div class="timeline" id="audit-timeline-events"></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="modal-btn-requisitar" class="btn btn-primary" onclick="openResendModal()">
+            Requisitar Biometria (Reenviar SMS)
+          </button>
+          <div class="modal-footer-right">
+            <button type="button" id="modal-btn-excluir" class="btn btn-danger" onclick="openDeleteModal()">Excluir Usuário</button>
+            <button type="button" class="btn btn-primary" onclick="saveUserChanges()">Salvar alterações</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="resendModal" class="modal-overlay" onclick="if (event.target.id === 'resendModal') closeResendModal()">
+    <div class="confirm-dialog">
+      <div class="modal-header">
+        <h2>Reenviar SMS</h2>
+      </div>
+      <div class="modal-body" id="resend-modal-body">
+        <p>Tem certeza que deseja reenviar o SMS de biometria?</p>
+        <p>Um novo link, válido por 48 horas, será enviado ao contato do operador.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-confirm-yes" onclick="confirmResend()">Sim</button>
+        <button type="button" class="btn btn-primary" onclick="closeResendModal()">Não</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="saveModal" class="modal-overlay" onclick="if (event.target.id === 'saveModal') closeSaveModal()">
+    <div class="confirm-dialog wide">
+      <div class="modal-header">
+        <h2>Justificativa</h2>
+      </div>
+      <div class="modal-body">
+        <p>O que está sendo alterado:</p>
+        <ul class="save-change-list" id="save-change-list"></ul>
+        <label for="save-justificativa">Justificativa</label>
+        <textarea id="save-justificativa" class="save-justificativa" oninput="updateSaveButton()"></textarea>
+        <p class="save-error" id="save-error">Informe a justificativa para salvar.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-confirm-yes" onclick="closeSaveModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="save-confirm-btn" onclick="confirmSave()" disabled>Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteModal" class="modal-overlay" onclick="if (event.target.id === 'deleteModal') closeDeleteModal()">
+    <div class="confirm-dialog">
+      <div class="modal-header">
+        <h2>Excluir Usuário</h2>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja excluir o usuário?</p>
+        <p>Essa ação não tem volta.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-confirm-yes" onclick="confirmDelete()">Sim</button>
+        <button type="button" class="btn btn-primary" onclick="closeDeleteModal()">Não</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast-box">
+    <span id="toast-message">Ação executada com sucesso.</span>
+  </div>
+
+  <script>
+    const USERS_DATA = [
+      {
+        id: 101,
+        nome: "Carlos Eduardo Silva",
+        cpf: "123.456.789-01",
+        cpf_clean: "12345678901",
+        telefone: "(11) 98765-4321",
+        email: "carlos.silva@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 10:15:00",
+        hora: "10:15",
+        turno: "Manhã",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 501,
+        request_id: "req_unic_01a2b",
+        iniciado_em: "2026-09-04 10:15:02",
+        finalizado_em: "2026-09-04 10:22:15",
+        tempo_min: 7.2,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 102,
+        nome: "Mariana Souza Ramos",
+        cpf: "234.567.890-12",
+        cpf_clean: "23456789012",
+        telefone: "(11) 98765-4322",
+        email: "mariana.ramos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 11:30:00",
+        hora: "11:30",
+        turno: "Manhã",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 502,
+        request_id: "req_unic_02c3d",
+        iniciado_em: "2026-09-04 11:30:05",
+        finalizado_em: "2026-09-04 11:38:40",
+        tempo_min: 8.6,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 103,
+        nome: "Roberto Albuquerque",
+        cpf: "345.678.901-23",
+        cpf_clean: "34567890123",
+        telefone: "(11) 98765-4323",
+        email: "roberto.albuquerque@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 17:00:00",
+        hora: "17:00",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 503,
+        request_id: "req_unic_03e4f",
+        iniciado_em: "2026-09-04 17:00:02",
+        finalizado_em: "2026-09-06 17:00:02",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo de 48h (Sexta 17h -> Domingo)",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 104,
+        nome: "Juliana Mendes Dias",
+        cpf: "456.789.012-34",
+        cpf_clean: "45678901234",
+        telefone: "(11) 98765-4324",
+        email: "juliana.dias@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-05 14:20:00",
+        hora: "14:20",
+        turno: "Tarde",
+        dia_semana: "Sábado",
+        risco_fim_semana: "Sim (Fim de semana)",
+        jornada_id: 504,
+        request_id: "req_unic_04g5h",
+        iniciado_em: "2026-09-05 14:20:04",
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Em Andamento",
+        etapa_parada: "SMS Enviado (Aguardando)",
+        motivo: "SMS enviado - Dentro da janela de 48 horas",
+        responsabilidade: "Dentro do Prazo Regulamentar",
+        acao: "Aguardar prazo regulamentar",
+        bloqueado: false,
+        cooldown_ativo: true
+      },
+      {
+        id: 105,
+        nome: "Lucas Gabriel Santos",
+        cpf: "567.890.123-45",
+        cpf_clean: "56789012345",
+        telefone: "(11) 98765-4325",
+        email: "lucas.santos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-04 18:30:00",
+        hora: "18:30",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 506,
+        request_id: "req_unic_05i6j",
+        iniciado_em: "2026-09-04 18:30:05",
+        finalizado_em: "2026-09-06 18:30:05",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo de 48h (Sexta 18:30 -> Domingo)",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 106,
+        nome: "Fernanda Oliveira Lima",
+        cpf: "678.901.234-56",
+        cpf_clean: "67890123456",
+        telefone: "(11) 98765-4326",
+        email: "fernanda.lima@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-08 08:45:00",
+        hora: "08:45",
+        turno: "Manhã",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 507,
+        request_id: "req_unic_06k7l",
+        iniciado_em: "2026-09-08 08:45:03",
+        finalizado_em: "2026-09-08 08:52:10",
+        tempo_min: 7.1,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 107,
+        nome: "Thiago Barbosa Costa",
+        cpf: "789.012.345-67",
+        cpf_clean: "78901234567",
+        telefone: "(11) 98765-4327",
+        email: "thiago.costa@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-08 10:10:00",
+        hora: "10:10",
+        turno: "Manhã",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 508,
+        request_id: "req_unic_07m8n",
+        iniciado_em: "2026-09-08 10:10:04",
+        finalizado_em: "2026-09-08 10:14:20",
+        tempo_min: 4.3,
+        status_biometria: "Finalizado sem Aprovação",
+        etapa_parada: "Captura de Documento",
+        motivo: "Reprovado por divergência documental (foto com corte de borda/ilegível)",
+        responsabilidade: "Fricção Operacional / Documento",
+        acao: "Orientar operador a reenviar com documento legível",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 108,
+        nome: "Patricia Neves Prado",
+        cpf: "890.123.456-78",
+        cpf_clean: "89012345678",
+        telefone: "(11) 98765-4328",
+        email: "patricia.prado@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-09 11:00:00",
+        hora: "11:00",
+        turno: "Manhã",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 509,
+        request_id: "req_unic_08o9p",
+        iniciado_em: "2026-09-09 11:00:02",
+        finalizado_em: "2026-09-09 11:09:45",
+        tempo_min: 9.7,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 109,
+        nome: "Vinicius Barbarulo Neves",
+        cpf: "901.234.567-89",
+        cpf_clean: "90123456789",
+        telefone: "(77) 98147-4477",
+        email: "vinicius.neves@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-16 14:45:00",
+        hora: "14:45",
+        turno: "Tarde",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 510,
+        request_id: "req_unic_09q0r",
+        iniciado_em: "2026-09-16 14:45:04",
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Em Andamento",
+        etapa_parada: "SMS Enviado (Aguardando)",
+        motivo: "SMS enviado - Dentro da janela regulamentar de 48 horas",
+        responsabilidade: "Dentro do Prazo Regulamentar",
+        acao: "Aguardar prazo regulamentar",
+        bloqueado: false,
+        cooldown_ativo: true
+      },
+      {
+        id: 110,
+        nome: "Amanda Castro Pinto",
+        cpf: "012.345.678-90",
+        cpf_clean: "01234567890",
+        telefone: "(11) 98765-4330",
+        email: "amanda.pinto@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-10 13:15:00",
+        hora: "13:15",
+        turno: "Tarde",
+        dia_semana: "Quinta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 511,
+        request_id: "req_unic_10s1t",
+        iniciado_em: "2026-09-10 13:15:03",
+        finalizado_em: "2026-09-12 13:15:03",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 111,
+        nome: "Guilherme Vieira Rocha",
+        cpf: "112.233.445-56",
+        cpf_clean: "11223344556",
+        telefone: "(11) 98765-4331",
+        email: "guilherme.rocha@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 15:40:00",
+        hora: "15:40",
+        turno: "Tarde",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 512,
+        request_id: "req_unic_11u2v",
+        iniciado_em: "2026-09-11 15:40:05",
+        finalizado_em: "2026-09-11 15:48:30",
+        tempo_min: 8.4,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 112,
+        nome: "Camila Ferreira Melo",
+        cpf: "223.344.556-67",
+        cpf_clean: "22334455667",
+        telefone: "(11) 98765-4332",
+        email: "camila.melo@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 17:20:00",
+        hora: "17:20",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 513,
+        request_id: "req_unic_12w3x",
+        iniciado_em: "2026-09-11 17:20:03",
+        finalizado_em: "2026-09-13 17:20:03",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 113,
+        nome: "Rodrigo Martins Cruz",
+        cpf: "334.455.667-78",
+        cpf_clean: "33445566778",
+        telefone: "(11) 98765-4333",
+        email: "rodrigo.cruz@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-12 11:10:00",
+        hora: "11:10",
+        turno: "Manhã",
+        dia_semana: "Sábado",
+        risco_fim_semana: "Sim (Fim de semana)",
+        jornada_id: 514,
+        request_id: "req_unic_13y4z",
+        iniciado_em: "2026-09-12 11:10:02",
+        finalizado_em: "2026-09-12 11:17:15",
+        tempo_min: 7.2,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 114,
+        nome: "Beatriz Azevedo Farias",
+        cpf: "445.566.778-89",
+        cpf_clean: "44556677889",
+        telefone: "(11) 98765-4334",
+        email: "beatriz.farias@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 18:00:00",
+        hora: "18:00",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 515,
+        request_id: "req_unic_14a5b",
+        iniciado_em: "2026-09-11 18:00:04",
+        finalizado_em: "2026-09-13 18:00:04",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 115,
+        nome: "Diego Henrique Campos",
+        cpf: "556.677.889-90",
+        cpf_clean: "55667788990",
+        telefone: "(11) 98765-4335",
+        email: "diego.campos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-14 16:30:00",
+        hora: "16:30",
+        turno: "Tarde",
+        dia_semana: "Segunda-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 516,
+        request_id: "req_unic_15c6d",
+        iniciado_em: "2026-09-14 16:30:02",
+        finalizado_em: "2026-09-14 16:36:50",
+        tempo_min: 6.8,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 119,
+        nome: "Julio Cesar Batista",
+        cpf: "667.788.991-11",
+        cpf_clean: "66778899111",
+        telefone: "(11) 98765-4339",
+        email: "julio.batista@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-09 15:20:00",
+        hora: "15:20",
+        turno: "Tarde",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 518,
+        request_id: "req_unic_17g8h",
+        iniciado_em: "2026-09-09 15:20:02",
+        finalizado_em: "2026-09-09 15:26:32",
+        tempo_min: 6.5,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 120,
+        nome: "Larissa Fontes Ribeiro",
+        cpf: "778.899.002-22",
+        cpf_clean: "77889900222",
+        telefone: "(11) 98765-4340",
+        email: "larissa.ribeiro@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-14 10:40:00",
+        hora: "10:40",
+        turno: "Manhã",
+        dia_semana: "Segunda-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 519,
+        request_id: "req_unic_18i9j",
+        iniciado_em: "2026-09-14 10:40:03",
+        finalizado_em: "2026-09-14 10:49:09",
+        tempo_min: 9.1,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 121,
+        nome: "Marcelo Pires Nogueira",
+        cpf: "889.900.113-33",
+        cpf_clean: "88990011333",
+        telefone: "(11) 98765-4341",
+        email: "marcelo.nogueira@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-15 09:15:00",
+        hora: "09:15",
+        turno: "Manhã",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 520,
+        request_id: "req_unic_19k0l",
+        iniciado_em: "2026-09-15 09:15:04",
+        finalizado_em: "2026-09-15 09:20:34",
+        tempo_min: 5.5,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 122,
+        nome: "Renata Vasconcelos",
+        cpf: "990.011.224-44",
+        cpf_clean: "99001122444",
+        telefone: "(11) 98765-4342",
+        email: "renata.vasconcelos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-15 14:10:00",
+        hora: "14:10",
+        turno: "Tarde",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 521,
+        request_id: "req_unic_20m1n",
+        iniciado_em: "2026-09-15 14:10:02",
+        finalizado_em: "2026-09-15 14:18:02",
+        tempo_min: 8.0,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 123,
+        nome: "Felipe Cardoso Lins",
+        cpf: "001.122.335-55",
+        cpf_clean: "00112233555",
+        telefone: "(11) 98765-4343",
+        email: "felipe.lins@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-16 09:30:00",
+        hora: "09:30",
+        turno: "Manhã",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 522,
+        request_id: "req_unic_21o2p",
+        iniciado_em: "2026-09-16 09:30:03",
+        finalizado_em: "2026-09-16 09:37:33",
+        tempo_min: 7.5,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 124,
+        nome: "Tatiane Duarte Prado",
+        cpf: "112.233.446-66",
+        cpf_clean: "11223344666",
+        telefone: "(11) 98765-4344",
+        email: "tatiane.prado@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-16 11:15:00",
+        hora: "11:15",
+        turno: "Manhã",
+        dia_semana: "Quarta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 523,
+        request_id: "req_unic_22q3r",
+        iniciado_em: "2026-09-16 11:15:05",
+        finalizado_em: "2026-09-16 11:23:17",
+        tempo_min: 8.2,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 125,
+        nome: "Vitor Hugo Moreira",
+        cpf: "223.344.557-77",
+        cpf_clean: "22334455777",
+        telefone: "(11) 98765-4345",
+        email: "vitor.moreira@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 10:00:00",
+        hora: "10:00",
+        turno: "Manhã",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: 524,
+        request_id: "req_unic_23s4t",
+        iniciado_em: "2026-09-11 10:00:02",
+        finalizado_em: "2026-09-11 10:07:56",
+        tempo_min: 7.9,
+        status_biometria: "Biometria Concluída",
+        etapa_parada: "Aprovação Final",
+        motivo: "Aprovado com sucesso pela Único",
+        responsabilidade: "Sucesso do Processo",
+        acao: "Liberado para operação",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 126,
+        nome: "Bruna Toledo Moraes",
+        cpf: "334.455.668-88",
+        cpf_clean: "33445566888",
+        telefone: "(11) 98765-4346",
+        email: "bruna.moraes@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-11 18:45:00",
+        hora: "18:45",
+        turno: "Tarde Crítica (>17h)",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Alto Risco (Expira no domingo)",
+        jornada_id: 525,
+        request_id: "req_unic_24u5v",
+        iniciado_em: "2026-09-11 18:45:04",
+        finalizado_em: "2026-09-13 18:45:04",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      {
+        id: 127,
+        nome: "Danilo Borges Cunha",
+        cpf: "445.566.779-99",
+        cpf_clean: "44556677999",
+        telefone: "(11) 98765-4347",
+        email: "danilo.cunha@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Novo Usuário",
+        cadastrado_em: "2026-09-12 16:00:00",
+        hora: "16:00",
+        turno: "Tarde",
+        dia_semana: "Sábado",
+        risco_fim_semana: "Sim (Fim de semana)",
+        jornada_id: 526,
+        request_id: "req_unic_25w6x",
+        iniciado_em: "2026-09-12 16:00:02",
+        finalizado_em: "2026-09-14 16:00:02",
+        tempo_min: 2880.0,
+        status_biometria: "Link Expirado (48h)",
+        etapa_parada: "SMS Enviado (Sem Acesso)",
+        motivo: "Usuário não acessou o link no prazo regulamentar de 48 horas",
+        responsabilidade: "Comportamento do Usuário (Abandono)",
+        acao: "Reenviar SMS pelo botão em tela",
+        bloqueado: true,
+        cooldown_ativo: false
+      },
+      // LEGADO PRÉ-CHAVEAMENTO (ISENTO DE BIOMETRIA)
+      {
+        id: 117,
+        nome: "Joao Paulo Matos",
+        cpf: "778.899.001-12",
+        cpf_clean: "77889900112",
+        telefone: "(11) 98765-4337",
+        email: "joao.matos@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Legado (Pré-Chaveamento)",
+        cadastrado_em: "2026-08-25 14:00:00",
+        hora: "14:00",
+        turno: "Tarde",
+        dia_semana: "Terça-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: null,
+        request_id: null,
+        iniciado_em: null,
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Sem Biometria (Isento)",
+        etapa_parada: "Sem Biometria (Isento)",
+        motivo: "Usuário cadastrado antes da data de obrigatoriedade (03/09/2026)",
+        responsabilidade: "Regra de Negócio (Legado)",
+        acao: "Sem ação imediata (Aguardar fase de migração)",
+        bloqueado: false,
+        cooldown_ativo: false
+      },
+      {
+        id: 118,
+        nome: "Ana Paula Diniz",
+        cpf: "889.900.112-23",
+        cpf_clean: "88990011223",
+        telefone: "(11) 98765-4338",
+        email: "ana.diniz@novapromotora.com.br",
+        loja: "082 - Nova Promotora",
+        tipo: "Legado (Pré-Chaveamento)",
+        cadastrado_em: "2026-08-28 16:20:00",
+        hora: "16:20",
+        turno: "Tarde",
+        dia_semana: "Sexta-feira",
+        risco_fim_semana: "Não (Dia útil)",
+        jornada_id: null,
+        request_id: null,
+        iniciado_em: null,
+        finalizado_em: null,
+        tempo_min: null,
+        status_biometria: "Sem Biometria (Isento)",
+        etapa_parada: "Sem Biometria (Isento)",
+        motivo: "Usuário cadastrado antes da data de obrigatoriedade (03/09/2026)",
+        responsabilidade: "Regra de Negócio (Legado)",
+        acao: "Sem ação imediata (Aguardar fase de migração)",
+        bloqueado: false,
+        cooldown_ativo: false
+      }
+    ];
+
+    let currentSelectedUserId = null;
+    let formBaseline = null;
+
+    const PROMOTORAS = {
+      "CONECT": "12.345.678/0001-90",
+      "FLAMEX": "23.456.789/0001-01",
+      "SOLIDA": "34.567.890/0001-12",
+      "DIRECT X": "45.678.901/0001-23",
+      "UNICA": "56.789.012/0001-34"
+    };
+    const PROMOTORA_NOMES = Object.keys(PROMOTORAS);
+
+    function promotorasDoUsuario(user) {
+      const indice = Math.abs(user.id - 101) % PROMOTORA_NOMES.length;
+      const nomes = [PROMOTORA_NOMES[indice]];
+      if (user.id % 7 === 0) nomes.push(PROMOTORA_NOMES[(indice + 1) % PROMOTORA_NOMES.length]);
+      return nomes;
+    }
+
+    function tipoUsuarioLabel(user) {
+      const mapa = {
+        101: "Externo / Master",
+        102: "Externo / Gerente",
+        103: "Externo / Digitador",
+        104: "Externo / Digitador in100",
+        105: "Externo / Master Gestor",
+        106: "Externo / Supervisor",
+        107: "Externo / Usuário",
+        108: "Interno / Admin",
+        109: "Interno / Digitador",
+        110: "Interno / Usuário",
+        111: "Externo / Digitador",
+        112: "Externo / Digitador in100",
+        113: "Externo / Gerente",
+        114: "Externo / Master",
+        115: "Externo / Master Gestor",
+        117: "Externo / Master Gestor",
+        118: "Externo / Supervisor",
+        119: "Externo / Supervisor",
+        120: "Externo / Usuário",
+        121: "Interno / Admin",
+        122: "Interno / Digitador",
+        123: "Interno / Usuário",
+        124: "Externo / Digitador",
+        125: "Externo / Digitador in100",
+        126: "Externo / Gerente",
+        127: "Externo / Master"
+      };
+      return mapa[user.id] || "Externo / Usuário";
+    }
+
+    function tipoUsuarioPerfil(user) {
+      const partes = tipoUsuarioLabel(user).split(" / ");
+      return [partes[0], partes[1] || "Usuário"];
+    }
+
+    function statusListagem(user) {
+      if (!user) return "";
+      if (user.status_biometria === "Biometria Concluída") return "Concluída";
+      if (user.status_biometria === "Link Expirado (48h)") return "Expirado (48h)";
+      if (user.status_biometria === "Em Andamento") return "Em Andamento";
+      if (user.status_biometria === "Finalizado sem Aprovação") return "Reprovado Doc";
+      return "Isento (Legado)";
+    }
+
+    function renderLojaTags(nomes) {
+      document.getElementById("modal-field-loja").innerHTML = nomes.map(nome =>
+        `<span class="tag-item">${nome} <span class="tag-remove">&times;</span></span>`
+      ).join("");
+    }
+
+    function toggleInfo(event, tipId) {
+      event.stopPropagation();
+      document.querySelectorAll(".info-tip").forEach(tip => {
+        if (tip.id !== tipId) tip.classList.remove("open");
+      });
+      document.getElementById(tipId).classList.toggle("open");
+    }
+
+    document.addEventListener("click", () => {
+      document.querySelectorAll(".info-tip.open").forEach(tip => tip.classList.remove("open"));
+    });
+
+    function openDeleteModal() {
+      document.getElementById("deleteModal").classList.add("active");
+    }
+
+    function closeDeleteModal() {
+      document.getElementById("deleteModal").classList.remove("active");
+    }
+
+    function confirmDelete() {
+      window.location.href = "index-novo.html";
+    }
+
+    function parseDate(dateStr) {
+      if (!dateStr) return null;
+      const m = String(dateStr).match(/(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/);
+      if (!m) return null;
+      return new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+    }
+
+    function pad(n) {
+      return String(n).padStart(2, "0");
+    }
+
+    function toStamp(date) {
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function formatDateTime(value, hoursNote) {
+      if (value === null || value === undefined || value === "") return "N/A";
+      const text = String(value);
+      if (text === "Em curso" || text === "N/A" || text === "-" || text === "Sem disparo") return text;
+      const date = value instanceof Date ? value : parseDate(text);
+      if (!date) return text;
+      const formatted = `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      return hoursNote === undefined || hoursNote === null ? formatted : `${formatted} (${hoursNote}h)`;
+    }
+
+    function addSeconds(dateStr, sec) {
+      const date = parseDate(dateStr);
+      if (!date) return "-";
+      date.setSeconds(date.getSeconds() + sec);
+      return toStamp(date);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const id = Number(params.get("id"));
+      const user = USERS_DATA.find(item => item.id === id);
+      if (!user) {
+        openCreatePage();
+        return;
+      }
+      openEditPage(user);
+    });
+
+    function openCreatePage() {
+      currentSelectedUserId = null;
+      document.title = "SENFFCONSIG - Novo Usuário";
+      document.getElementById("page-title").innerText = "Novo Usuário";
+      document.getElementById("page-subtitle").innerText = "Cadastro de operador na loja chaveada";
+      document.getElementById("modal-field-nome").value = "";
+      document.getElementById("modal-field-cpf").value = "";
+      document.getElementById("modal-field-email").value = "";
+      document.getElementById("modal-field-tel").value = "";
+      renderLojaTags([]);
+      document.getElementById("modal-field-biometria-status").value = "";
+      document.getElementById("modal-field-tipo").value = "Usuário";
+      document.getElementById("modal-field-block1").checked = false;
+      document.getElementById("modal-field-block2").checked = false;
+      document.getElementById("modal-btn-requisitar").style.display = "none";
+      document.getElementById("modal-btn-excluir").style.display = "none";
+      captureBaseline();
+      document.getElementById("audit-timeline-events").innerHTML = `
+        <div class="timeline-item">
+          <div class="timeline-dot dot-gray">i</div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Novo cadastro</span>
+            </div>
+            <div class="timeline-desc">A jornada biométrica começa depois que o usuário é salvo e a loja está chaveada.</div>
+          </div>
+        </div>`;
+      switchModalTab("cadastral");
+    }
+
+    function openEditPage(user) {
+      currentSelectedUserId = user.id;
+      const [, perfil] = tipoUsuarioPerfil(user);
+      document.title = "SENFFCONSIG - Editar Usuário";
+      document.getElementById("page-title").innerText = "Editar Usuário";
+      document.getElementById("page-subtitle").innerText = user.nome;
+      document.getElementById("modal-field-nome").value = user.nome;
+      document.getElementById("modal-field-cpf").value = user.cpf;
+      document.getElementById("modal-field-email").value = user.email;
+      document.getElementById("modal-field-tel").value = user.telefone;
+      renderLojaTags(promotorasDoUsuario(user));
+      document.getElementById("modal-field-tipo").value = perfil;
+      document.getElementById("modal-field-biometria-status").value = statusListagem(user);
+      document.getElementById("modal-field-block1").checked = user.bloqueado;
+      document.getElementById("modal-field-block2").checked = user.usuario_block !== undefined ? user.usuario_block : user.bloqueado;
+      atualizarBotaoReenvio(user);
+      document.getElementById("modal-btn-excluir").style.display = "";
+      ensureAlteracoes(user);
+      captureBaseline();
+
+      renderAuditTimeline(user);
+      switchModalTab("cadastral");
+    }
+
+    function switchModalTab(tabName) {
+      document.getElementById("tabCadastral").classList.remove("active");
+      document.getElementById("tabAuditoria").classList.remove("active");
+      document.getElementById("tabBtnCadastral").classList.remove("active");
+      document.getElementById("tabBtnAuditoria").classList.remove("active");
+      if (tabName === "cadastral") {
+        document.getElementById("tabCadastral").classList.add("active");
+        document.getElementById("tabBtnCadastral").classList.add("active");
+      } else {
+        document.getElementById("tabAuditoria").classList.add("active");
+        document.getElementById("tabBtnAuditoria").classList.add("active");
+      }
+    }
+
+    function renderAuditTimeline(user) {
+      const timelineEl = document.getElementById("audit-timeline-events");
+      timelineEl.innerHTML = "";
+      renderChangeLogs(timelineEl, user);
+
+      if (!user || user.tipo === "Legado (Pré-Chaveamento)") {
+        const item = document.createElement("div");
+        item.className = "timeline-item";
+        item.innerHTML = `
+          <div class="timeline-dot dot-gray">i</div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Operador Cadastrado no Legado</span>
+              <span class="timeline-time">${user ? formatDateTime(user.cadastrado_em) : ""}</span>
+            </div>
+            <div class="timeline-desc">Usuário cadastrado antes do chaveamento biométrico da Nova Promotora em 03/09/2026. Isento de biometria na fase atual.</div>
+          </div>`;
+        timelineEl.appendChild(item);
+        return;
+      }
+
+      const events = [
+        {
+          dotClass: "success",
+          icon: "1",
+          title: "Requisição Criada & SMS Disparado",
+          time: user.iniciado_em,
+          desc: `Processo iniciado via OpenUserProcessService. SMS enviado para ${user.telefone} com link Único ID Cloud (Token válido por 48 horas).`
+        },
+        {
+          dotClass: "success",
+          icon: "2",
+          title: "Webhook Único: SMS Entregue à Operadora",
+          time: addSeconds(user.iniciado_em, 3),
+          desc: "Status da mensagem: DELIVERED. Confirmação de recebimento no aparelho celular do operador."
+        }
+      ];
+
+      if (user.status_biometria === "Link Expirado (48h)") {
+        events.push({
+          dotClass: "danger",
+          icon: "!",
+          title: "Decurso de Prazo (Link Expirado após 48 horas)",
+          time: user.finalizado_em,
+          hoursNote: 48,
+          desc: "O operador não clicou no link recebido no prazo regulamentar de 48 horas. Processo finalizado com status EXPIRED. Usuário marcado como bloqueado preventivamente no Senff Consig."
+        });
+      } else if (user.status_biometria === "Em Andamento") {
+        events.push({
+          dotClass: "warning",
+          icon: "...",
+          title: "Aguardando Interação do Usuário",
+          time: "Em curso",
+          desc: "SMS entregue. Link ativo no celular do usuário aguardando abertura e captura de documento."
+        });
+      } else if (user.status_biometria === "Finalizado sem Aprovação") {
+        events.push(
+          {
+            dotClass: "success",
+            icon: "3",
+            title: "Link Aberto pelo Usuário no Navegador Mobile",
+            time: addSeconds(user.iniciado_em, 72),
+            desc: "IP: 189.40.112.54 | Dispositivo: Chrome Mobile (Android) | Termos de consentimento aceitos."
+          },
+          {
+            dotClass: "danger",
+            icon: "X",
+            title: "Webhook Único: Reprovação Documental (RG / CNH)",
+            time: user.finalizado_em,
+            desc: "Falha na validação do documento: Imagem com corte de borda e reflexo ilegível. Código: OCR_DOCUMENT_UNREADABLE. A biometria facial não foi executada."
+          }
+        );
+      } else if (user.status_biometria === "Biometria Concluída") {
+        events.push(
+          {
+            dotClass: "success",
+            icon: "3",
+            title: "Link Aberto no Navegador Mobile",
+            time: addSeconds(user.iniciado_em, 65),
+            desc: "Acesso mobile validado com sucesso. Dispositivo autorizado."
+          },
+          {
+            dotClass: "success",
+            icon: "4",
+            title: "Captura de Documento e Validação de OCR",
+            time: addSeconds(user.iniciado_em, 210),
+            desc: "Frente e Verso do documento capturados. OCR aprovado com 99,4% de confiabilidade cadastral (CPF e Nome conferem)."
+          },
+          {
+            dotClass: "success",
+            icon: "5",
+            title: "Captura Biométrica Facial (Prova de Vida)",
+            time: addSeconds(user.iniciado_em, 340),
+            desc: "Liveness passivo e ativo aprovados pela Único. Score Biométrico: 98.7% de conformidade."
+          },
+          {
+            dotClass: "success",
+            icon: "OK",
+            title: "Webhook Final: Parecer Aprovado (Liberado)",
+            time: user.finalizado_em,
+            desc: `Jornada concluída em ${user.tempo_min} minutos. Usuário liberado para acesso imediato no Senff Consig.`
+          }
+        );
+      }
+
+      events.forEach(ev => {
+        const item = document.createElement("div");
+        item.className = "timeline-item";
+        const when = ev.time === "Em curso" ? "Em curso" : formatDateTime(ev.time, ev.hoursNote);
+        item.innerHTML = `
+          <div class="timeline-dot ${ev.dotClass}">${ev.icon}</div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">${ev.title}</span>
+              <span class="timeline-time">${when}</span>
+            </div>
+            <div class="timeline-desc">${ev.desc}</div>
+          </div>`;
+        timelineEl.appendChild(item);
+      });
+    }
+
+    function atualizarBotaoReenvio(user) {
+      const btn = document.getElementById("modal-btn-requisitar");
+      btn.style.display = user ? "" : "none";
+      btn.disabled = false;
+    }
+
+    function ensureAlteracoes(user) {
+      if (user.alteracoes && user.alteracoes.length) return;
+      const variante = user.id % 4;
+      if (variante === 0) {
+        user.alteracoes = [{
+          quando: "2026-09-18 11:20:00",
+          autor: "Administrador",
+          justificativa: "Nome ajustado conforme documento apresentado.",
+          campos: [{ campo: "Nome Completo", de: "Cadastro provisório", para: user.nome }]
+        }];
+      } else if (variante === 1) {
+        user.alteracoes = [{
+          quando: "2026-09-19 16:05:00",
+          autor: "Administrador",
+          justificativa: "Telefone corrigido a pedido da loja.",
+          campos: [{ campo: "Telefone (SMS Único)", de: "(11) 90000-0000", para: user.telefone }]
+        }];
+      } else if (variante === 2) {
+        user.alteracoes = [{
+          quando: "2026-09-21 09:40:00",
+          autor: "Administrador",
+          justificativa: "Acesso bloqueado a pedido do gestor da promotora.",
+          campos: [{ campo: "Bloquear", de: "Desligado", para: "Ligado" }]
+        }];
+      } else {
+        user.alteracoes = [{
+          quando: "2026-09-22 14:15:00",
+          autor: "Administrador",
+          justificativa: "Atualização cadastral e bloqueio preventivo.",
+          campos: [
+            { campo: "Telefone (SMS Único)", de: "(11) 91111-0000", para: user.telefone },
+            { campo: "Bloquear", de: "Desligado", para: "Ligado" },
+            { campo: "Usuário Block", de: "Desligado", para: "Ligado" }
+          ]
+        }];
+      }
+    }
+
+    function renderChangeLogs(timelineEl, user) {
+      if (!user || !user.alteracoes) return;
+      user.alteracoes.forEach(log => {
+        const campos = log.campos.map(item => `${item.campo}: ${item.de} → ${item.para}`).join("<br>");
+        const item = document.createElement("div");
+        item.className = "timeline-item";
+        item.innerHTML = `
+          <div class="timeline-dot warning">A</div>
+          <div class="timeline-content">
+            <div class="timeline-header">
+              <span class="timeline-title">Alteração cadastral</span>
+              <span class="timeline-time">${formatDateTime(log.quando)}</span>
+            </div>
+            <div class="timeline-desc">
+              Usuário: ${log.autor}<br>
+              ${campos}<br>
+              Justificativa: ${log.justificativa}
+            </div>
+          </div>`;
+        timelineEl.appendChild(item);
+      });
+    }
+
+    function captureBaseline() {
+      formBaseline = readFormState();
+    }
+
+    function readFormState() {
+      return {
+        nome: document.getElementById("modal-field-nome").value.trim(),
+        email: document.getElementById("modal-field-email").value.trim(),
+        telefone: document.getElementById("modal-field-tel").value.trim(),
+        tipo: document.getElementById("modal-field-tipo").value,
+        bloquear: document.getElementById("modal-field-block1").checked,
+        usuarioBlock: document.getElementById("modal-field-block2").checked
+      };
+    }
+
+    function ligacao(valor) {
+      return valor ? "Ligado" : "Desligado";
+    }
+
+    function collectChanges() {
+      const atual = readFormState();
+      const pares = [
+        ["Nome Completo", formBaseline.nome, atual.nome],
+        ["E-mail", formBaseline.email, atual.email],
+        ["Telefone (SMS Único)", formBaseline.telefone, atual.telefone],
+        ["Tipo de Usuário", formBaseline.tipo, atual.tipo],
+        ["Bloquear", ligacao(formBaseline.bloquear), ligacao(atual.bloquear)],
+        ["Usuário Block", ligacao(formBaseline.usuarioBlock), ligacao(atual.usuarioBlock)]
+      ];
+      return pares
+        .filter(([, de, para]) => de !== para)
+        .map(([campo, de, para]) => ({ campo, de, para }));
+    }
+
+    function openResendModal() {
+      const user = USERS_DATA.find(item => item.id === currentSelectedUserId);
+      if (!user) return;
+      const body = document.getElementById("resend-modal-body");
+      if (user.status_biometria === "Link Expirado (48h)") {
+        body.innerHTML = "<p>Tem certeza que deseja reenviar o SMS de biometria?</p><p>Um novo link, válido por 48 horas, será enviado ao contato do operador.</p>";
+      } else {
+        body.innerHTML = "<p>O link ainda não está expirado.<br><br>Deseja enviar outro link assim mesmo?<br><br>O link anterior ficará inválido.</p>";
+      }
+      document.getElementById("resendModal").classList.add("active");
+    }
+
+    function closeResendModal() {
+      document.getElementById("resendModal").classList.remove("active");
+    }
+
+    function confirmResend() {
+      closeResendModal();
+      const user = USERS_DATA.find(item => item.id === currentSelectedUserId);
+      if (!user) return;
+      const now = new Date();
+      user.cooldown_ativo = true;
+      user.status_biometria = "Em Andamento";
+      user.iniciado_em = toStamp(now);
+      user.motivo = "SMS reenviado via tela em " + formatDateTime(now);
+      openEditPage(user);
+      showToast(`SMS com link de biometria reenviado com sucesso para ${user.telefone}.`);
+    }
+
+    function saveUserChanges() {
+      const changes = collectChanges();
+      const list = document.getElementById("save-change-list");
+      list.innerHTML = changes.length
+        ? changes.map(item => `<li><strong>${item.campo}</strong>: ${item.de} → ${item.para}</li>`).join("")
+        : "<li>Nenhuma alteração na tela.</li>";
+      document.getElementById("save-justificativa").value = "";
+      document.getElementById("save-error").style.display = "none";
+      updateSaveButton();
+      document.getElementById("saveModal").classList.add("active");
+    }
+
+    function updateSaveButton() {
+      const texto = document.getElementById("save-justificativa").value.trim();
+      const temAlteracao = collectChanges().length > 0;
+      document.getElementById("save-confirm-btn").disabled = !temAlteracao || texto.length === 0;
+    }
+
+    function closeSaveModal() {
+      document.getElementById("saveModal").classList.remove("active");
+    }
+
+    function confirmSave() {
+      const justificativa = document.getElementById("save-justificativa").value.trim();
+      const changes = collectChanges();
+      if (!changes.length || !justificativa) {
+        document.getElementById("save-error").style.display = "block";
+        return;
+      }
+      if (!currentSelectedUserId) {
+        closeSaveModal();
+        showToast("Justificativa registrada. O cadastro novo segue no fluxo da tela de usuários.");
+        return;
+      }
+      const user = USERS_DATA.find(item => item.id === currentSelectedUserId);
+      const atual = readFormState();
+      user.nome = atual.nome;
+      user.telefone = atual.telefone;
+      user.email = atual.email;
+      user.bloqueado = atual.bloquear;
+      user.usuario_block = atual.usuarioBlock;
+      ensureAlteracoes(user);
+      user.alteracoes.unshift({
+        quando: toStamp(new Date()),
+        autor: "Administrador",
+        justificativa,
+        campos: changes
+      });
+      document.getElementById("page-subtitle").innerText = user.nome;
+      captureBaseline();
+      renderAuditTimeline(user);
+      closeSaveModal();
+      showToast("Alterações do usuário salvas com sucesso.");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toast-message").innerText = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3500);
+    }
+  </script>
+</body>
+</html>
