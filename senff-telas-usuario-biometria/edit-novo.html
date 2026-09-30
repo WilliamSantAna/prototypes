@@ -1345,6 +1345,8 @@
         <h2>Justificativa</h2>
       </div>
       <div class="modal-body">
+        <p>Você está bloqueando este usuário.</p>
+        <p>Digite uma justificativa plausível para esta ação.</p>
         <label for="save-justificativa">Justificativa</label>
         <textarea id="save-justificativa" class="save-justificativa" oninput="updateSaveButton()"></textarea>
         <p class="save-error" id="save-error">Informe uma justificativa com no mínimo 10 caracteres e pelo menos 3 letras. Pontuação sozinha não vale.</p>
@@ -2556,7 +2558,9 @@
     }
 
     function onBloquearChange() {
-      if (!document.getElementById("modal-field-block1").checked) return;
+      const checkbox = document.getElementById("modal-field-block1");
+      if (!checkbox.checked) return;
+      checkbox.checked = false;
       document.getElementById("save-justificativa").value = "";
       document.getElementById("save-error").style.display = "none";
       document.getElementById("save-confirm-btn").disabled = true;
@@ -2615,6 +2619,7 @@
     function confirmBlock() {
       const justificativa = document.getElementById("save-justificativa").value.trim();
       if (!justificativaValida(justificativa)) {
+        document.getElementById("modal-field-block1").checked = false;
         document.getElementById("save-error").style.display = "block";
         return;
       }
