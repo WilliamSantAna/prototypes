@@ -1347,7 +1347,7 @@
       <div class="modal-body">
         <label for="save-justificativa">Justificativa</label>
         <textarea id="save-justificativa" class="save-justificativa" oninput="updateSaveButton()"></textarea>
-        <p class="save-error" id="save-error">Informe a justificativa.</p>
+        <p class="save-error" id="save-error">Informe uma justificativa com no mínimo 10 caracteres e pelo menos 3 letras. Pontuação sozinha não vale.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-confirm-yes" onclick="closeSaveModal()">Cancelar</button>
@@ -2594,9 +2594,17 @@
       showToast("Alterações do usuário salvas com sucesso.");
     }
 
+    function justificativaValida(texto) {
+      const limpo = texto.trim();
+      const letras = (limpo.match(/[A-Za-zÀ-ÿ]/g) || []).length;
+      return limpo.length >= 10 && letras >= 3;
+    }
+
     function updateSaveButton() {
       const texto = document.getElementById("save-justificativa").value.trim();
-      document.getElementById("save-confirm-btn").disabled = texto.length === 0;
+      const valida = justificativaValida(texto);
+      document.getElementById("save-confirm-btn").disabled = !valida;
+      document.getElementById("save-error").style.display = texto && !valida ? "block" : "none";
     }
 
     function closeSaveModal() {
@@ -2606,7 +2614,7 @@
 
     function confirmBlock() {
       const justificativa = document.getElementById("save-justificativa").value.trim();
-      if (!justificativa) {
+      if (!justificativaValida(justificativa)) {
         document.getElementById("save-error").style.display = "block";
         return;
       }
